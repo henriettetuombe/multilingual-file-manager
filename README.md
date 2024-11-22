@@ -60,27 +60,28 @@ This application is designed to handle real-world scenarios like collaborative p
 
 multilingual-file-manager/
 ├── backend/
-│   ├── config/               # Database and Redis configurations
-│   ├── controllers/          # Business logic for user and file management
-│   ├── locales/              # Translation JSON files
-│   ├── middlewares/          # Authentication and validation middleware
-│   ├── migrations/           # Sequelize migration scripts
-│   ├── models/               # Sequelize models (e.g., User, File)
-│   ├── routes/               # API routes for user and file endpoints
-│   ├── tests/                # Unit tests for backend functionalities
-│   ├── queue.js              # Redis queue setup
-│   ├── worker.js             # Worker for background tasks
-│   ├── app.js                # Main backend application file
-│   └── package.json          # Backend dependencies
+│   ├── config/
+│   ├── controllers/
+│   ├── locales/
+│   ├── middlewares/
+│   ├── migrations/
+│   ├── models/
+│   ├── routes/
+│   ├── tests/
+│   ├── queue.js
+│   ├── worker.js
+│   ├── app.js
+│   └── package.json
 ├── frontend/
-│   ├── components/           # React components
-│   ├── pages/                # React Router or Next.js pages
-│   ├── styles/               # CSS or SCSS styles
-│   ├── src/                  # Source files
-│   ├── public/               # Static files (e.g., images, icons)
-│   ├── .env.example          # Example environment variables for frontend
-│   └── package.json          # Frontend dependencies
-└── README.md                 # Documentation
+│   ├── components/
+│   ├── pages/
+│   ├── styles/
+│   ├── src/
+│   ├── public/
+│   ├── .env.example
+│   └── package.json
+├── README.md
+
 
 ============================================================
 Setup Instructions
