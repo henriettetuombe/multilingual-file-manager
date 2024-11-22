@@ -1,4 +1,11 @@
+# Node.js dependencies
 node_modules/
-vscode/
+
+# Visual Studio Code settings
+.vscode/
+
+# Build output or public files (optional)
+public/
+
+# Environment variables
 .env
-public

@@ -1,42 +1,37 @@
-import database from "../database.js";
+import { Sequelize, DataTypes } from "sequelize";
+import sequelize from "../config/database.js"; // Ensure the path is correct
 
-export const createUserModel = async ({ email, password }) => {
-  const language = "en";
-  const [data] = await database.query(
-    `INSERT INTO users (email, password, language) VALUES ('${email}', '${password}', '${language}')`
-  );
+const User = sequelize.define(
+  "User",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: "users",
+    timestamps: true,
+  }
+);
 
-  return data;
-};
-
-export const getUsersModel = async () => {
-  return await database.query("SELECT * FROM users");
-};
-
+// Add the `getUserByIdModel` function
 export const getUserByIdModel = async (id) => {
-  const [data] = await database.query(
-    `SELECT * FROM users WHERE id = ${id} LIMIT 1`
-  );
-
-  return data?.[0] ? data[0] : undefined;
+  return await User.findByPk(id);
 };
 
-export const updateUserModel = async (id, { email, password, language }) => {
-  const [data] = await database.query(
-    `UPDATE users SET email = '${email}', password = '${password}' WHERE id = ${id}`
-  );
-  
-  return data;
-};
-
-export const deleteUserModel = async (id) => {
-  const [data] = await database.query(`DELETE FROM users WHERE id = ${id}`);
-  return data;
-};
-
-export const findUserByEmailModel = async (email) => {
-  const [data] = await database.query(
-    `SELECT * FROM users WHERE email = '${email}'`
-  );
-  return data;
-};
+export default User;

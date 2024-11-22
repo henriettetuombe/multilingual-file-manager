@@ -1,33 +1,38 @@
-import express from "express";
+import express from 'express';
+import { body } from 'express-validator';
 import {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "../controllers/users.js";
-import { body } from "express-validator";
+    getUsers,
+    getUserById,
+    registerUser,
+    loginUser,
+    updateUser,
+    deleteUser,
+} from '../controllers/users.js';
 
 const userRoutes = express.Router();
 
-userRoutes.get("/", getUsers);
-
-userRoutes.get("/:id", getUserById);
-
+userRoutes.get('/', getUsers);
+userRoutes.get('/:id', getUserById);
 userRoutes.post(
-  "/",
-  [
-    body("email").notEmpty({ ignore_whitespace: false }),
-    body("password").notEmpty({ ignore_whitespace: false }),
-    body("confirmPassword")
-      .notEmpty({ ignore_whitespace: true })
-      .custom((value, { req }) => value === req.body.password),
-  ],
-  createUser
+    '/register',
+    [
+        body('email').isEmail().withMessage('Email must be valid'),
+        body('password')
+            .isLength({ min: 6 })
+            .withMessage('Password must be at least 6 characters'),
+        body('username').notEmpty().withMessage('Username is required'),
+    ],
+    registerUser
 );
-
-userRoutes.put("/:id", updateUser);
-
-userRoutes.delete("/:id", deleteUser);
+userRoutes.post(
+    '/login',
+    [
+        body('email').isEmail().withMessage('Email must be valid'),
+        body('password').notEmpty().withMessage('Password is required'),
+    ],
+    loginUser
+);
+userRoutes.put('/:id', updateUser);
+userRoutes.delete('/:id', deleteUser);
 
 export default userRoutes;

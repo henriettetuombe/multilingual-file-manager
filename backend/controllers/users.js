@@ -1,118 +1,78 @@
-import { validationResult } from "express-validator";
-import {
-  createUserModel,
-  deleteUserModel,
-  getUserByIdModel,
-  getUsersModel,
-  updateUserModel,
-  findUserByEmailModel,
-} from "../models/users.js";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import db from '../database.js';
 
-export const getUsers = async (req, res, next) => {
-  try {
-    const users = await getUsersModel();
-
-    res.json({ users });
-  } catch {
-    const error = new Error("Internal server error");
-    next(error);
-  }
+export const getUsers = async (req, res) => {
+    try {
+        const [users] = await db.query('SELECT id, username, email, created_at FROM users');
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve users' });
+    }
 };
 
-export const getUserById = async (req, res, next) => {
-  console.log(res)
-  try {
-    const id = Number(req.params.id);
-    const user = await getUserByIdModel(id);
-
-    if (!user) {
-      const error = new Error("User not found");
-      error.status = 404;
-
-      return next(error);
+export const getUserById = async (req, res) => {
+    try {
+        const [user] = await db.query('SELECT id, username, email, created_at FROM users WHERE id = ?', [req.params.id]);
+        if (user.length === 0) return res.status(404).json({ error: 'User not found' });
+        res.json(user[0]);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve user' });
     }
-
-    res.json({ user });
-  } catch {
-    const error = new Error("Internal server error");
-    next(error);
-  }
 };
 
-export const createUser = async (req, res, next) => {
-  try {
-    const validationErrors = validationResult(req);
-    console.log(validationErrors)
-    if (!validationErrors.isEmpty()) {
-      const error = new Error("Validation errors");
-
-      return next(error);
+export const registerUser = async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [
+            username,
+            email,
+            hashedPassword,
+        ]);
+        res.status(201).json({ message: 'User registered successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to register user' });
     }
+};
 
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
+    try {
+        const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (user.length === 0) return res.status(404).json({ error: 'Invalid email or password' });
 
-    const userWithSameEmail = await findUserByEmailModel(email);
+        const isPasswordValid = await bcrypt.compare(password, user[0].password);
+        if (!isPasswordValid) return res.status(401).json({ error: 'Invalid email or password' });
 
-    if (userWithSameEmail.length > 0) {
-      const error = new Error("User with the same email already exists");
-      error.status = 409;
-
-      return next(error);
+        const token = jwt.sign({ id: user[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.json({ token });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to log in' });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    await createUserModel({
-      email: email,
-      password: hashedPassword,
-    });
-
-    res.status(201).json({
-      message: `The user with ${email} has been added!`,
-    });
-  } catch(error) {
-    console.log(error);
-    const errorM = new Error("Internal server error");
-
-    next(errorM);
-  }
 };
 
-export const updateUser = async (req, res, next) => {
-  try {
-    const id = Number(req.params.id);
-
-    const updatedUser = await updateUserModel(id, req.body);
-
-    if (!updateUser) {
-      const error = new Error("User not found");
-
-      return next(error);
+export const updateUser = async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.query('UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?', [
+            username,
+            email,
+            hashedPassword,
+            req.params.id,
+        ]);
+        res.json({ message: 'User updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update user' });
     }
-
-    res.json({ user: updatedUser });
-  } catch {
-    const error = new Error("Internal server error");
-    next(error);
-  }
 };
 
-export const deleteUser = async (req, res, next) => {
-  try {
-    const id = Number(req.params.id);
-
-    const deletedUser = await deleteUserModel(id);
-
-    if (!deletedUser) {
-      const error = new Error("User not found");
-
-      return next(error);
+export const deleteUser = async (req, res) => {
+    try {
+        await db.query('DELETE FROM users WHERE id = ?', [req.params.id]);
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to delete user' });
     }
-
-    res.status(204);
-  } catch {
-    const error = new Error("Internal server error");
-    next(error);
-  }
 };

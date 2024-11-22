@@ -26,10 +26,10 @@ app.use(
   expressjwt({
     secret: process.env.JWT_SECRET_KEY,
     algorithms: ["HS256"],
-  }).unless({ path: [/^\/auth/, "/"] })
+  }).unless({ path: [/^\/auth/, "/"] }) // Exclude auth routes and the home route
 );
 
-// Attach user to request
+// Attach user to request (middleware)
 app.use(async (req, res, next) => {
   if (req.auth?.id) {
     try {
@@ -37,7 +37,7 @@ app.use(async (req, res, next) => {
       if (!user) {
         throw new Error("User not found");
       }
-      req.user = user;
+      req.user = user; // Attach user to the request
     } catch (error) {
       console.error(error);
       return next(new Error("Authentication failed"));
@@ -47,16 +47,16 @@ app.use(async (req, res, next) => {
 });
 
 // Routes
-app.use("/users", userRoutes);
-app.use("/files", fileRoutes);
-app.use("/auth", authRoutes);
+app.use("/users", userRoutes); // User management routes
+app.use("/files", fileRoutes); // File management routes
+app.use("/auth", authRoutes); // Authentication routes
 
 // Home route
 app.get("/", (req, res) => {
   res.send("Welcome to our multilingual file manager platform!");
 });
 
-// Error handler
+// Global error handler
 app.use((error, req, res, next) => {
   console.error(error);
   res.status(error.status || 500).json({ message: error.message || "Internal Server Error" });
