@@ -60,7 +60,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/longmaker2/multilingual-file-manager.git
+   git clone https://github.com/henriettetuombe/multilingual-file-manager.git
    cd multilingual-file-manager
    ```
 
