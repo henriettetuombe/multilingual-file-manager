@@ -1,9 +1,0 @@
-{
-  "development": {
-    "username": "uninst_user",
-    "password": "MySQL@2024",
-    "database": "multifile_language_manager",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-  }
-}
