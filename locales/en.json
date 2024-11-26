@@ -1,0 +1,14 @@
+{
+    "welcomeMessage": "Welcome to the Multilingual File Manager Application!",
+    "message": "This is a localized message.",
+    "userRegistered": "User registered successfully.",
+    "fieldsRequired": "All fields are required.",
+    "userNotFound": "User not found.",
+    "loginSuccessful": "Login successful.",
+    "fileCreated": "File created successfully.",
+    "filesFetched": "Files fetched successfully.",
+    "fileFetched": "File fetched successfully.",
+    "fileNotFound": "File not found.",
+    "fileUpdated": "File updated successfully.",
+    "fileDeleted": "File deleted successfully."
+  }

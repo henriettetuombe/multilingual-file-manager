@@ -1,0 +1,14 @@
+{
+    "welcomeMessage": "Bienvenue dans l'application de gestion de fichiers multilingue!",
+    "message": "Ceci est un message localisé.",
+    "userRegistered": "Utilisateur enregistré avec succès.",
+    "fieldsRequired": "Tous les champs sont obligatoires.",
+    "userNotFound": "Utilisateur non trouvé.",
+    "loginSuccessful": "Connexion réussie.",
+    "fileCreated": "Fichier créé avec succès.",
+    "filesFetched": "Fichiers récupérés avec succès.",
+    "fileFetched": "Fichier récupéré avec succès.",
+    "fileNotFound": "Fichier non trouvé.",
+    "fileUpdated": "Fichier mis à jour avec succès.",
+    "fileDeleted": "Fichier supprimé avec succès."
+}
