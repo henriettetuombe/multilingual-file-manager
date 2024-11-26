@@ -195,3 +195,4 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 ## Authors
 
 - [Henriette Tuombe](https://github.com/henriettetuombe)
+- [Shemssa Patience](https://github.com/pshemssa)
