@@ -1,30 +1,36 @@
 const express = require('express');
-const routes = require('./routes/routes');
-const { sequelize } = require('./models');
-
+const bodyParser = require('body-parser');
+const routes = require('./routes');
 const app = express();
+const i18next = require('i18next');
+const i18nextMiddleware = require('i18next-express-middleware');
+const Backend = require('i18next-node-fs-backend');
 
-// Middleware for parsing JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middlewares
+app.use(bodyParser.json());
 
-// Debugging Middleware for Content-Type (optional)
-app.use((req, res, next) => {
-    console.log(`Received Content-Type: ${req.headers['content-type']}`);
-    next();
+i18next.use(Backend).init({
+  lng: 'en',
+  backend: {
+    loadPath: __dirname + '/locales/{{lng}}.json'
+  }
+});
+
+app.use(i18nextMiddleware.handle(i18next));
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Multilingual File Manager Application!');
 });
 
 // Routes
-app.use('/', routes);
-
-// Test database connection
-sequelize
-    .authenticate()
-    .then(() => console.log('Database connected successfully'))
-    .catch((err) => console.error('Unable to connect to the database:', err));
+app.use('/api', routes);
 
 // Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
