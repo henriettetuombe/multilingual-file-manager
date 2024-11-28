@@ -11,6 +11,7 @@ const extractData = (req) => {
     password: req.headers['x-password'],
   };
 
+  // Prioritize data from body, then query, then headers
   return {
     username: bodyData.username || queryData.username || headerData.username,
     email: bodyData.email || queryData.email || headerData.email,
@@ -30,7 +31,7 @@ exports.register = async (req, res) => {
   }
 
   try {
-    // Check if email is already registered
+    // Check if the email is already registered
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: 'Email is already registered' });
