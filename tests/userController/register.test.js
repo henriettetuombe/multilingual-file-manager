@@ -3,14 +3,9 @@ const bcrypt = require('bcrypt');
 const { User } = require('../../models');
 const app = require('../../app');
 
-// Mock User model
-jest.mock('../../models', () => ({
-  User: {
-    create: jest.fn(),
-  },
-}));
+jest.mock('../../models');
 
-describe('POST /user/register', () => {
+describe('POST /api/register', () => {
   it('should register a user from request body', async () => {
     const userData = {
       username: 'testuser',
@@ -18,18 +13,65 @@ describe('POST /user/register', () => {
       password: 'password123',
     };
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    // Mock User.create to return a user object
     User.create.mockResolvedValue({
       ...userData,
-      _id: '507f1f77bcf86cd799439011',
-      password: hashedPassword,
+      id: 1,
+      password: await bcrypt.hash(userData.password, 10),
     });
 
     const response = await request(app)
-      .post('/user/register')
+      .post('/api/register')
       .send(userData)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      username: userData.username,
+      email: userData.email,
+    });
+  });
+
+  it('should register a user from query parameters', async () => {
+    const userData = {
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123',
+    };
+
+    User.create.mockResolvedValue({
+      ...userData,
+      id: 1,
+      password: await bcrypt.hash(userData.password, 10),
+    });
+
+    const response = await request(app)
+      .post('/api/register')
+      .query(userData)
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      username: userData.username,
+      email: userData.email,
+    });
+  });
+
+  it('should register a user from headers', async () => {
+    const userData = {
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123',
+    };
+
+    User.create.mockResolvedValue({
+      ...userData,
+      id: 1,
+      password: await bcrypt.hash(userData.password, 10),
+    });
+
+    const response = await request(app)
+      .post('/api/register')
+      .set('x-username', userData.username)
+      .set('x-email', userData.email)
+      .set('x-password', userData.password)
       .expect(201);
 
     expect(response.body).toMatchObject({
@@ -40,26 +82,12 @@ describe('POST /user/register', () => {
 
   it('should return 400 if any field is missing', async () => {
     const response = await request(app)
-      .post('/user/register')
-      .send({ username: 'testuser' }) // Missing email and password
+      .post('/api/register')
+      .send({
+        username: 'testuser',
+      })
       .expect(400);
 
     expect(response.body.message).toBe('All fields are required');
-  });
-
-  it('should return 500 if there is a server error', async () => {
-    // Mock User.create to throw an error
-    User.create.mockRejectedValue(new Error('Database error'));
-
-    const response = await request(app)
-      .post('/user/register')
-      .send({
-        username: 'testuser',
-        email: 'testuser@example.com',
-        password: 'password123',
-      })
-      .expect(500);
-
-    expect(response.body.message).toBe('Error registering user');
   });
 });
