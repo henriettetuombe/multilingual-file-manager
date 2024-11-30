@@ -95,7 +95,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 - **Register a User:**
 
   ```http
-  POST /api/users/register
+  POST /users/register
   ```
 
   Request Body:
@@ -111,7 +111,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 - **Login a User:**
 
   ```http
-  POST /api/users/login
+  POST /users/login
   ```
 
   Request Body:
@@ -135,7 +135,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 
   ```json
   {
-    "userId": 1,
+    "userId": "userid",
     "name": "testfile.txt",
     "size": 1024,
     "type": "txt",
@@ -196,3 +196,12 @@ This is a Multilingual File Manager Application built using Node.js, Express, My
 
 - [Henriette Tuombe](https://github.com/henriettetuombe)
 - [Shemssa Patience](https://github.com/pshemssa)
+
+
+
+
+
+
+
+http://localhost:3000/user/register
+http://localhost:3000/user/login

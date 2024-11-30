@@ -3,26 +3,32 @@ const bcrypt = require('bcrypt');
 const { User } = require('../../models');
 const app = require('../../app');
 
-jest.mock('../../models');
+// Mock User model and bcrypt
+jest.mock('../../models', () => ({
+  User: {
+    findOne: jest.fn(),
+  },
+}));
+jest.mock('bcrypt', () => ({
+  compare: jest.fn(),
+  hash: jest.fn(),
+}));
 
-describe('POST /api/login', () => {
+describe('POST /user/login', () => {
   it('should login a user with valid credentials', async () => {
-    const userData = {
-      email: 'testuser@example.com',
-      password: 'password123',
-    };
-
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const userData = { email: 'testuser@example.com', password: 'password123' };
 
     User.findOne.mockResolvedValue({
-      id: 1,
+      _id: '507f1f77bcf86cd799439011',
       username: 'testuser',
       email: userData.email,
-      password: hashedPassword,
+      password: 'hashedPassword', // Stored hashed password
     });
 
+    bcrypt.compare.mockResolvedValue(true); // Simulate valid password
+
     const response = await request(app)
-      .post('/api/login')
+      .post('/user/login')
       .send(userData)
       .expect(200);
 
@@ -35,34 +41,26 @@ describe('POST /api/login', () => {
     User.findOne.mockResolvedValue(null);
 
     const response = await request(app)
-      .post('/api/login')
-      .send({
-        email: 'unknown@example.com',
-        password: 'password123',
-      })
+      .post('/user/login')
+      .send({ email: 'unknown@example.com', password: 'password123' })
       .expect(400);
 
     expect(response.body.message).toBe('User not found');
   });
 
   it('should return 400 if password is invalid', async () => {
-    const userData = {
-      email: 'testuser@example.com',
-      password: 'wrongpassword',
-    };
-
-    const hashedPassword = await bcrypt.hash('password123', 10);
-
     User.findOne.mockResolvedValue({
-      id: 1,
+      _id: '507f1f77bcf86cd799439011',
       username: 'testuser',
-      email: userData.email,
-      password: hashedPassword,
+      email: 'testuser@example.com',
+      password: 'hashedPassword',
     });
 
+    bcrypt.compare.mockResolvedValue(false); // Simulate invalid password
+
     const response = await request(app)
-      .post('/api/login')
-      .send(userData)
+      .post('/user/login')
+      .send({ email: 'testuser@example.com', password: 'wrongpassword' })
       .expect(400);
 
     expect(response.body.message).toBe('Invalid password');
@@ -70,10 +68,8 @@ describe('POST /api/login', () => {
 
   it('should return 400 if any field is missing', async () => {
     const response = await request(app)
-      .post('/api/login')
-      .send({
-        email: 'testuser@example.com',
-      })
+      .post('/user/login')
+      .send({ email: 'testuser@example.com' }) // Missing password
       .expect(400);
 
     expect(response.body.message).toBe('All fields are required');

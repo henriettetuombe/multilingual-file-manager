@@ -1,4 +1,4 @@
-const fileQueue = require('./queue');
+const fileQueue = require('../config/queue');
 
 fileQueue.process(async (job) => {
   // Perform file processing tasks here

@@ -1,52 +1,24 @@
-'use strict';
-const { Model } = require('sequelize');
-const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 
-module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
-      User.hasMany(models.File, { foreignKey: 'userId' });
-    }
-
-    validPassword(password) {
-      return bcrypt.compareSync(password, this.password);
-    }
-  }
-
-  User.init({
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+const userSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
     },
     email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true
-      }
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        match: [/^\S+@\S+\.\S+$/, 'Invalid email format'], // Email validation
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  }, {
-    sequelize,
-    modelName: 'User',
-    hooks: {
-      beforeCreate: async (user) => {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      },
-      beforeUpdate: async (user) => {
-        if (user.changed('password')) {
-          const salt = await bcrypt.genSalt(10);
-          user.password = await bcrypt.hash(user.password, salt);
-        }
-      }
-    }
-  });
+        type: String,
+        required: true,
+        minlength: 6, // Enforce password length
+    },
+}, { timestamps: true });
 
-  return User;
-};
+module.exports = mongoose.model('UserModel', userSchema);
