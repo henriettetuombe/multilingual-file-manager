@@ -1,5 +1,5 @@
 {
-    "welcomeMessage": "Welcome to the Multilingual File Manager Application!",
+    "welcome": "Welcome to the Multilingual File Manager Application!",
     "message": "This is a localized message.",
     "userRegistered": "User registered successfully.",
     "fieldsRequired": "All fields are required.",

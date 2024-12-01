@@ -1,5 +1,5 @@
 {
-    "welcomeMessage": "Bienvenue dans l'application de gestion de fichiers multilingue!",
+    "welcome": "Bienvenue dans l'application de gestion de fichiers multilingue!",
     "message": "Ceci est un message localisé.",
     "userRegistered": "Utilisateur enregistré avec succès.",
     "fieldsRequired": "Tous les champs sont obligatoires.",
