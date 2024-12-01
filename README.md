@@ -102,7 +102,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, MO
 
   ```json
   {
-    "username": "testuser",
+    "fullNamename": "testuser",
     "email": "testuser@example.com",
     "password": "password123"
   }
@@ -203,5 +203,4 @@ This is a Multilingual File Manager Application built using Node.js, Express, MO
 
 
 
-http://localhost:3000/user/register
-http://localhost:3000/user/login
+
