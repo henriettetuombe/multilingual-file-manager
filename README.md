@@ -95,7 +95,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, MO
 - **Register a User:**
 
   ```http
-  POST /users/register
+  POST /user/register
   ```
 
   Request Body:
@@ -111,7 +111,7 @@ This is a Multilingual File Manager Application built using Node.js, Express, MO
 - **Login a User:**
 
   ```http
-  POST /users/login
+  POST /user/login
   ```
 
   Request Body:
