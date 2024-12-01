@@ -1,6 +1,6 @@
 # Multilingual File Manager Application
 
-This is a Multilingual File Manager Application built using Node.js, Express, MySQL, and i18next for internationalization. The application provides user registration, login, and file management functionalities with support for multiple languages.
+This is a Multilingual File Manager Application built using Node.js, Express, MONGODB, and i18next for internationalization. The application provides user registration, login, and file management functionalities with support for multiple languages.
 
 ## Features
 
